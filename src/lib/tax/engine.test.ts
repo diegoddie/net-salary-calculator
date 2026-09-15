@@ -185,8 +185,12 @@ describe("confini - detrazione lavoro dipendente", () => {
     expect(calcolaDetrazioneLavoro(15000).detrazioneLavoro).toBeCloseTo(1955, 6);
   });
   it("R poco sopra 15.000 passa alla seconda formula", () => {
-    expect(calcolaDetrazioneLavoro(15000.01).detrazioneLavoro).toBeLessThan(1955);
+    expect(calcolaDetrazioneLavoro(15000.01).detrazioneLavoro).toBeCloseTo(
+      1910 + (1190 * (28000 - 15000.01)) / 13000,
+      6,
+    );
   });
+
   it("R = 25.000 non ha maggiorazione (condizione >)", () => {
     expect(calcolaDetrazioneLavoro(25000).maggiorazione).toBe(0);
   });
