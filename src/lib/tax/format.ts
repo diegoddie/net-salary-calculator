@@ -52,5 +52,6 @@ export function parseItalianNumber(raw: string): number | null {
 export function formatThousandsInput(raw: string): string {
   const onlyDigits = raw.replace(/[^\d]/g, "");
   if (onlyDigits === "") return "";
-  return integer.format(Number(onlyDigits));
+  return formatInt(Number(onlyDigits));
 }
+
