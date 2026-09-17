@@ -5,8 +5,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-        <Link to="/" className="flex items-baseline gap-2">
-          <span className="text-base font-semibold tracking-tight">
+        <Link to="/" className="flex shrink-0 items-center gap-2">
+          <span className="whitespace-nowrap text-base font-semibold tracking-tight">
             Lordo → Netto
           </span>
           <span className="num rounded-full bg-accent px-2 py-0.5 text-xs text-accent-foreground">
@@ -27,7 +27,7 @@ export function SiteHeader() {
             className="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             activeProps={{ className: "bg-secondary !text-foreground font-medium" }}
           >
-            Regole e metodologia
+            Regole
           </Link>
         </nav>
       </div>
