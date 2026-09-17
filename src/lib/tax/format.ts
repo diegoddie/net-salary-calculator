@@ -1,46 +1,44 @@
-const currency = new Intl.NumberFormat("it-IT", {
-  style: "currency",
-  currency: "EUR",
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
+// Formattazione italiana deterministica (niente Intl: l'ICU del runtime server
+// può differire da quello del browser e causare mismatch di hydration).
 
-const decimal = new Intl.NumberFormat("it-IT", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-});
+function groupThousands(intPart: string): string {
+  return intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
 
-const integer = new Intl.NumberFormat("it-IT", { maximumFractionDigits: 0 });
+function formatFixed(value: number, decimals: number): string {
+  const negative = value < 0 || Object.is(value, -0);
+  const abs = Math.abs(value);
+  const fixed = abs.toFixed(decimals);
+  const [intPart, decPart] = fixed.split(".");
+  const out = groupThousands(intPart) + (decPart ? "," + decPart : "");
+  return (negative && Number(fixed) !== 0 ? "-" : "") + out;
+}
 
-/** € 1.234,56 */
+/** 1.234,56 € */
 export function formatEuro(value: number): string {
-  return currency.format(value);
+  return formatFixed(value, 2) + "\u00A0€";
 }
 
 /** 1.234,56 (senza simbolo) */
 export function formatNumber(value: number): string {
-  return decimal.format(value);
+  return formatFixed(value, 2);
 }
 
 /** 1.234 */
 export function formatInt(value: number): string {
-  return integer.format(value);
+  return formatFixed(value, 0);
 }
 
 /** 25,6% */
 export function formatPercent(value: number, decimals = 2): string {
-  return (
-    new Intl.NumberFormat("it-IT", {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    }).format(value) + "%"
-  );
+  return formatFixed(value, decimals) + "%";
 }
 
 /** 9,19% da 0.0919 */
 export function formatAliquota(value: number, decimals = 2): string {
   return formatPercent(value * 100, decimals);
 }
+
 
 /** parsing di un input italiano "35.000,50" -> 35000.5 */
 export function parseItalianNumber(raw: string): number | null {
@@ -54,5 +52,6 @@ export function parseItalianNumber(raw: string): number | null {
 export function formatThousandsInput(raw: string): string {
   const onlyDigits = raw.replace(/[^\d]/g, "");
   if (onlyDigits === "") return "";
-  return integer.format(Number(onlyDigits));
+  return formatInt(Number(onlyDigits));
 }
+
