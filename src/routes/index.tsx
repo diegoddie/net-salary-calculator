@@ -38,8 +38,8 @@ export const Route = createFileRoute("/")({
 const PRESETS = [25000, 35000, 45000, 60000, 90000];
 
 function Calcolatore() {
-  const [raw, setRaw] = useState("35.000");
-  const [mensilita, setMensilita] = useState<Mensilita>(14);
+  const [raw, setRaw] = useState("");
+  const [mensilita, setMensilita] = useState<Mensilita>(13);
 
   const ral = parseItalianNumber(raw);
   const valid =
@@ -80,7 +80,7 @@ function Calcolatore() {
               value={raw}
               onChange={(e) => setRaw(formatThousandsInput(e.target.value))}
               className="num w-full bg-transparent text-lg outline-none"
-              placeholder="35.000"
+              placeholder="Inserisci la tua RAL"
               aria-describedby="ral-help"
             />
             <span className="text-xs text-muted-foreground">/ anno</span>
@@ -89,7 +89,7 @@ function Calcolatore() {
             Solo la RAL da contratto: senza TFR e senza contributi a carico
             dell'azienda.
           </p>
-          {!valid && (
+          {!valid && raw.trim() !== "" && (
             <p className="mt-2 text-xs text-destructive">
               Inserisci un importo tra 1 € e {formatEuro(C.limiti.ralMax)}.
             </p>
@@ -100,7 +100,7 @@ function Calcolatore() {
             min={10000}
             max={150000}
             step={500}
-            value={valid ?? 35000}
+            value={valid ?? 10000}
             onChange={(e) =>
               setRaw(formatThousandsInput(String(e.target.value)))
             }
@@ -152,6 +152,15 @@ function Calcolatore() {
         </div>
 
         {/* ---------- Risultati ---------- */}
+        {!result && (
+          <div className="surface flex h-fit items-center gap-3 p-5 text-sm text-muted-foreground">
+            <Info className="size-4 shrink-0" />
+            <span>
+              Inserisci la tua RAL per vedere lo stipendio netto e il dettaglio
+              delle trattenute.
+            </span>
+          </div>
+        )}
         {result && (
           <div className="space-y-6">
             <div className="surface p-5">
